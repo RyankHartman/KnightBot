@@ -13,11 +13,15 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script>
-    // Apply the saved theme before first paint.
-    try {
-      var t = localStorage.getItem("knight-theme");
-      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
-    } catch (e) {}
+    // Before first paint: embed mode (?embed=1, used by widget.js) and theme.
+    (function () {
+      var root = document.documentElement;
+      var params = new URLSearchParams(location.search);
+      if (params.has("embed")) root.classList.add("embed");
+      var t = params.get("theme");
+      try { if (!t) t = localStorage.getItem("knight-theme"); } catch (e) {}
+      if (t === "light" || t === "dark") root.dataset.theme = t;
+    })();
   </script>
 </head>
 <body>
@@ -27,7 +31,11 @@
     <header class="topbar">
       <div class="brand">
         <span class="brand-dot" aria-hidden="true"></span>
-        <span class="brand-name">Knight</span>
+        <img class="brand-avatar" src="assets/robot.png" alt="" width="40" height="40" />
+        <span class="brand-text">
+          <span class="brand-name">Knight</span>
+          <span class="brand-sub mono">Ryan’s super-smart Shih Tzu</span>
+        </span>
         <span class="tag mono">super smart</span>
       </div>
       <div class="topbar-actions">
@@ -38,6 +46,9 @@
         <button type="button" class="btn btn-icon" id="theme-toggle" aria-label="Switch to light theme" title="Toggle theme">
           <svg class="icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>
           <svg class="icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg>
+        </button>
+        <button type="button" class="btn btn-icon embed-only" id="close-embed" aria-label="Close chat" title="Close">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>
         </button>
       </div>
     </header>

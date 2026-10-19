@@ -263,5 +263,23 @@
     input.focus();
   });
 
+  // ---------- Embed mode (inside the widget.js iframe) ----------
+  if (document.documentElement.classList.contains("embed")) {
+    empty.querySelector("h1").textContent = "Hey, I’m Knight.";
+    empty.querySelector(".empty-sub").textContent =
+      "Ryan’s super-smart Shih Tzu. Ask me anything: questions, writing, brainstorming, explanations.";
+
+    const toParent = (type) => window.parent.postMessage({ source: "knight-widget", type }, "*");
+    $("close-embed").addEventListener("click", () => toParent("close"));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") toParent("close");
+    });
+    window.addEventListener("message", (e) => {
+      if (e.source === window.parent && e.data?.source === "knight-widget" && e.data.type === "focus") {
+        input.focus();
+      }
+    });
+  }
+
   updateComposer();
 })();

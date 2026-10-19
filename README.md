@@ -14,6 +14,8 @@ public/index.html      Page
 public/styles.css      Styles (dark/light themes, responsive, reduced motion)
 public/app.js          Chat logic
 public/assets/robot.png
+public/widget.js       Embeddable floating Knight button + pop-up chat
+public/widget-demo.html  Sample page showing the widget
 scripts/dev-server.js  Local server (static files + /api/chat)
 scripts/dev-mock.js    Local server wired to a fake Groq (no key needed)
 scripts/mock-groq.js   Fake Groq API used by tests and dev:mock
@@ -48,6 +50,24 @@ Run the API tests:
 ```bash
 npm test
 ```
+
+## Add Knight to another website
+
+Paste one tag before the closing `</body>` of any site, using your Vercel URL:
+
+```html
+<script src="https://YOUR-KNIGHT-APP.vercel.app/widget.js" defer></script>
+```
+
+A floating Knight dog appears in the bottom-right corner. Clicking it opens the chat in a pop-up panel (full screen on phones). The chat runs inside an iframe from your Knight deployment, so the host site never sees your Groq key and its styles can't clash with Knight's.
+
+Optional attributes on the tag:
+
+- `data-position="left"` puts the button in the bottom-left corner.
+- `data-theme="light"` gives the panel a light theme.
+- `data-nudge="off"` hides the "Woof! Ask Knight anything." hint.
+
+Preview it locally at http://localhost:3000/widget-demo.html.
 
 ## Limits and safeguards
 
