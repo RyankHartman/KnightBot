@@ -9,6 +9,8 @@
  *   data-position="left"   put the button bottom-left (default: right)
  *   data-theme="light"     light chat panel (default: dark)
  *   data-nudge="off"       hide the "Ask Knight anything!" hint
+ *   data-mode="general"    let Knight answer anything (default: "about", where
+ *                          Knight only answers questions about Ryan)
  */
 (() => {
   "use strict";
@@ -23,7 +25,8 @@
   const side = script.dataset.position === "left" ? "left" : "right";
   const theme = script.dataset.theme === "light" ? "light" : "dark";
   const showNudge = script.dataset.nudge !== "off";
-  const chatUrl = `${origin}/?embed=1&theme=${theme}`;
+  const mode = script.dataset.mode === "general" ? "general" : "about";
+  const chatUrl = `${origin}/?embed=1&theme=${theme}&mode=${mode}`;
   const iconUrl = `${origin}/assets/robot.png`;
 
   const host = document.createElement("div");
@@ -136,7 +139,7 @@
         .launcher, .nudge { transition: none; }
       }
     </style>
-    <div class="nudge" aria-hidden="true">Woof! Ask Knight anything.</div>
+    <div class="nudge" aria-hidden="true">${mode === "about" ? "Woof! Ask me about Ryan." : "Woof! Ask Knight anything."}</div>
     <div class="panel" id="knight-panel" role="dialog" aria-label="Chat with Knight" hidden></div>
     <button class="launcher" type="button" aria-label="Chat with Knight, Ryan’s AI Shih Tzu"
             aria-expanded="false" aria-controls="knight-panel" title="Chat with Knight">

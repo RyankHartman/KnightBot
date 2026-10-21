@@ -138,6 +138,27 @@ await test("times out slow upstream with 504", async () => {
   assert.equal(r.json.error.code, "timeout");
 });
 
+await test("about mode sends Ryan's profile and scope rules", async () => {
+  mock.requests.length = 0;
+  const r = await call("POST", { messages: [user("Where did Ryan go to school?")], mode: "about" });
+  assert.equal(r.status, 200);
+  const system = mock.requests[0].body.messages[0].content;
+  assert.match(system, /YOUR SCOPE: RYAN ONLY/);
+  assert.match(system, /Cornell SC Johnson College of Business/);
+  assert.match(system, /politely decline/);
+  assert.ok(!system.includes("<!--"), "editor comments are stripped");
+  assert.ok(!/\b727\b/.test(system), "no phone number in the profile");
+  assert.equal(mock.requests[0].body.temperature, 0.4);
+});
+
+await test("general mode (default) does not include the profile", async () => {
+  mock.requests.length = 0;
+  await call("POST", { messages: [user("hi")], mode: "something-else" });
+  const system = mock.requests[0].body.messages[0].content;
+  assert.match(system, /general-purpose assistant/);
+  assert.ok(!system.includes("RYAN'S PROFILE"));
+});
+
 await test("reports a missing GROQ_API_KEY", async () => {
   const key = process.env.GROQ_API_KEY;
   delete process.env.GROQ_API_KEY;

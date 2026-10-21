@@ -4,7 +4,11 @@
   const MAX_CHARS = 4000; // matches the server limit
   const HISTORY_LIMIT = 12; // recent messages sent as context
   const CLIENT_TIMEOUT_MS = 30000; // slightly above the server's Groq timeout
-  const GREETING = "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. What’s on your mind?";
+  // ?mode=about (set by widget.js on Ryan's site): Knight only answers questions about Ryan.
+  const MODE = new URLSearchParams(location.search).get("mode") === "about" ? "about" : "general";
+  const GREETING = MODE === "about"
+    ? "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. Ask me anything about Ryan!"
+    : "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. What’s on your mind?";
 
   const $ = (id) => document.getElementById(id);
   const log = $("log");
@@ -171,7 +175,7 @@
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-HISTORY_LIMIT) }),
+        body: JSON.stringify({ messages: history.slice(-HISTORY_LIMIT), mode: MODE }),
         signal: controller.signal,
       });
       const data = await res.json().catch(() => null);
@@ -263,11 +267,31 @@
     input.focus();
   });
 
+  // ---------- About-Ryan mode ----------
+  if (MODE === "about") {
+    bubbleText.textContent = GREETING;
+    empty.querySelector("h1").textContent = "Ask me about Ryan.";
+    empty.querySelector(".empty-sub").textContent =
+      "Ryan’s background, education, work, projects and interests. I’ve sniffed out all the details.";
+    const prompts = [
+      "What’s Ryan’s background?",
+      "Where did Ryan go to school?",
+      "What has Ryan built or shipped?",
+      "What does Ryan do for fun?",
+    ];
+    document.querySelectorAll("#suggestions .chip").forEach((chip, i) => {
+      if (prompts[i]) chip.textContent = prompts[i];
+    });
+    input.placeholder = "Ask about Ryan…";
+  }
+
   // ---------- Embed mode (inside the widget.js iframe) ----------
   if (document.documentElement.classList.contains("embed")) {
-    empty.querySelector("h1").textContent = "Hey, I’m Knight.";
-    empty.querySelector(".empty-sub").textContent =
-      "Ryan’s super-smart Shih Tzu. Ask me anything: questions, writing, brainstorming, explanations.";
+    if (MODE === "general") {
+      empty.querySelector("h1").textContent = "Hey, I’m Knight.";
+      empty.querySelector(".empty-sub").textContent =
+        "Ryan’s super-smart Shih Tzu. Ask me anything: questions, writing, brainstorming, explanations.";
+    }
 
     const toParent = (type) => window.parent.postMessage({ source: "knight-widget", type }, "*");
     $("close-embed").addEventListener("click", () => toParent("close"));

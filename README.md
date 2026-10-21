@@ -10,6 +10,8 @@ The persona lives in `SYSTEM_PROMPT` in `api/chat.js`. Knight introduces itself 
 
 ```
 api/chat.js            Serverless endpoint (POST /api/chat) → Groq
+knowledge/ryan.md      Ryan's profile: the only source for "about Ryan" mode
+vercel.json            Bundles knowledge/ with the API function
 public/index.html      Page
 public/styles.css      Styles (dark/light themes, responsive, reduced motion)
 public/app.js          Chat logic
@@ -65,7 +67,10 @@ Optional attributes on the tag:
 
 - `data-position="left"` puts the button in the bottom-left corner.
 - `data-theme="light"` gives the panel a light theme.
-- `data-nudge="off"` hides the "Woof! Ask Knight anything." hint.
+- `data-nudge="off"` hides the "Woof!" hint.
+- `data-mode="general"` lets Knight answer anything. By default the widget uses **about mode**: Knight only answers questions about Ryan (background, education, work, interests), using `knowledge/ryan.md` as its only source, and politely declines everything else. The standalone app stays general-purpose.
+
+To change what Knight knows about Ryan, edit `knowledge/ryan.md`, then push and redeploy.
 
 Preview it locally at http://localhost:3000/widget-demo.html.
 
