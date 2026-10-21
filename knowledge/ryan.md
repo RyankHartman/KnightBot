@@ -11,7 +11,8 @@ Sources: Ryan's portfolio site (ryan-builds-stories), his PM résumé, and his p
 - Ryan Hartman is a product manager and lifelong builder. Tagline: "Builder. Lifelong learner. Risk-taker."
 - Currently a full-time MBA candidate at Cornell's SC Johnson College of Business (Class of 2028) in Ithaca, NY, and a Roy H. Park Leadership Fellow.
 - Background: almost ten years in technology consulting and strategy (2017–2026), specializing in data, analytics and Power BI executive dashboards, followed by a pre-MBA product management internship at GMAT Club.
-- Post-MBA goal: product management in tech (including big tech), or a corporate leadership development / general management / marketing leadership program in tech, biotech or pharma.
+- Post-MBA goal: product management, or a corporate leadership development, general management or marketing leadership program.
+- Industries: Ryan is open to opportunities across industries. If asked about a specific industry or company, say Ryan is open to it and point to the relevant experience; never say Ryan is only interested in certain industries.
 - Looking for: teams solving real problems with data and AI, and a culture that lets builders build.
 
 ## Where Ryan is from
