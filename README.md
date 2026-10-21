@@ -67,7 +67,7 @@ Optional attributes on the tag:
 
 - `data-position="left"` puts the button in the bottom-left corner.
 - `data-theme="light"` gives the panel a light theme.
-- `data-nudge="off"` hides the "Woof!" hint.
+- `data-nudge="off"` hides the speech bubble above Knight ("Hi, I’m Knight, Ryan’s AI pup! Ask me anything about Ryan."). The bubble stays up until the visitor opens the chat or dismisses it, then stays hidden for that browser session.
 - `data-mode="general"` lets Knight answer anything. By default the widget uses **about mode**: Knight only answers questions about Ryan (background, education, work, interests), using `knowledge/ryan.md` as its only source, and politely declines everything else. The standalone app stays general-purpose.
 
 To change what Knight knows about Ryan, edit `knowledge/ryan.md`, then push and redeploy.

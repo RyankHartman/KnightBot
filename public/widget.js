@@ -8,7 +8,7 @@
  * Optional attributes on the script tag:
  *   data-position="left"   put the button bottom-left (default: right)
  *   data-theme="light"     light chat panel (default: dark)
- *   data-nudge="off"       hide the "Ask Knight anything!" hint
+ *   data-nudge="off"       hide the speech bubble above Knight
  *   data-mode="general"    let Knight answer anything (default: "about", where
  *                          Knight only answers questions about Ryan)
  */
@@ -73,24 +73,67 @@
       }
       .launcher[aria-expanded="true"] .badge { display: flex; }
 
+      /* Speech bubble above Knight: click to open the chat, x to dismiss. */
       .nudge {
         position: fixed;
-        ${side}: 108px;
-        bottom: 46px;
+        ${side}: 14px;
+        bottom: 116px;
         z-index: 2147483000;
-        max-width: 220px;
-        padding: 10px 14px;
-        border-radius: 14px;
+        width: max-content;
+        max-width: min(250px, calc(100vw - 28px));
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(8px) scale(0.96);
+        transform-origin: bottom ${side};
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+      }
+      .nudge.show {
+        visibility: visible;
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
+      }
+      .nudge-text {
+        display: block;
+        margin: 0;
+        padding: 12px 16px;
+        border: 0;
+        border-radius: 16px;
         background: #c6f432;
         color: #16181c;
-        font: 700 14px/1.3 "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        opacity: 0;
-        transform: translateY(6px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        pointer-events: none;
+        font: 700 14px/1.35 "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        text-align: left;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       }
-      .nudge.show { opacity: 1; transform: none; }
+      .nudge-text::after {
+        /* tail pointing down at Knight */
+        content: "";
+        position: absolute;
+        ${side}: 38px;
+        bottom: -9px;
+        border-left: 9px solid transparent;
+        border-right: 9px solid transparent;
+        border-top: 10px solid #c6f432;
+      }
+      .nudge-text:hover { filter: brightness(1.05); }
+      .nudge-close {
+        position: absolute;
+        top: -9px;
+        ${side === "right" ? "left" : "right"}: -9px;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 2px solid #c6f432;
+        border-radius: 50%;
+        background: #16181c;
+        color: #c6f432;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .nudge-text:focus-visible, .nudge-close:focus-visible { outline: 3px solid #2fa8ff; outline-offset: 2px; }
 
       .panel {
         position: fixed;
@@ -121,7 +164,9 @@
         }
         .panel:not([hidden]) ~ .launcher { display: none; }
         .launcher { width: 72px; height: 72px; }
-        .nudge { ${side}: 94px; bottom: 38px; }
+        .nudge { ${side}: 12px; bottom: 100px; max-width: min(215px, calc(100vw - 24px)); }
+        .nudge-text { padding: 10px 13px; font-size: 13px; }
+        .nudge-text::after { ${side}: 32px; }
       }
 
       @keyframes knight-hop {
@@ -139,7 +184,14 @@
         .launcher, .nudge { transition: none; }
       }
     </style>
-    <div class="nudge" aria-hidden="true">${mode === "about" ? "Woof! Ask me about Ryan." : "Woof! Ask Knight anything."}</div>
+    <div class="nudge">
+      <button class="nudge-text" type="button">${mode === "about"
+        ? "Hi, I’m Knight, Ryan’s AI pup! Ask me anything about Ryan."
+        : "Hi, I’m Knight, Ryan’s AI pup! Ask me anything."}</button>
+      <button class="nudge-close" type="button" aria-label="Dismiss Knight’s message">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="10" height="10"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg>
+      </button>
+    </div>
     <div class="panel" id="knight-panel" role="dialog" aria-label="Chat with Knight" hidden></div>
     <button class="launcher" type="button" aria-label="Chat with Knight, Ryan’s AI Shih Tzu"
             aria-expanded="false" aria-controls="knight-panel" title="Chat with Knight">
@@ -155,8 +207,11 @@
   const nudge = root.querySelector(".nudge");
   let iframe = null;
 
+  // The bubble stays up until the visitor opens the chat or dismisses it,
+  // then stays hidden for the rest of the browser session.
   function hideNudge() {
     nudge.classList.remove("show");
+    try { sessionStorage.setItem("knight-nudge", "1"); } catch (e) { /* storage unavailable */ }
   }
 
   function open() {
@@ -192,6 +247,11 @@
   }
 
   launcher.addEventListener("click", () => (panel.hidden ? open() : close()));
+  root.querySelector(".nudge-text").addEventListener("click", open);
+  root.querySelector(".nudge-close").addEventListener("click", () => {
+    hideNudge();
+    launcher.focus();
+  });
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !panel.hidden) close();
@@ -207,11 +267,8 @@
     try { seen = sessionStorage.getItem("knight-nudge") === "1"; } catch (e) { /* storage unavailable */ }
     if (!seen) {
       setTimeout(() => {
-        if (!panel.hidden) return;
-        nudge.classList.add("show");
-        try { sessionStorage.setItem("knight-nudge", "1"); } catch (e) { /* storage unavailable */ }
-        setTimeout(hideNudge, 7000);
-      }, 2500);
+        if (panel.hidden) nudge.classList.add("show");
+      }, 1500);
     }
   }
 
