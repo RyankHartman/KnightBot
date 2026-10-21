@@ -70,7 +70,7 @@ Sources: Ryan's portfolio site (ryan-builds-stories), his PM résumé, and his p
 ## Builder and entrepreneur
 
 - Co-founded a family photography business: built the website and led pricing, positioning and client strategy.
-- Built this website and Knight, the AI chatbot you're talking to.
+- Built this website and Knight, the AI chatbot you're talking to: Ryan scoped the product, wrote the persona and guardrails, and shipped it end to end with AI-assisted development. Knight runs on Groq LLM inference through a Vercel serverless endpoint, answers only from this profile, and embeds on any site with one script tag.
 
 ## Awards, publications and skills
 
@@ -94,7 +94,8 @@ Sources: Ryan's portfolio site (ryan-builds-stories), his PM résumé, and his p
 ## Interests and life outside work
 
 - Has explored 20 of America's 63 national parks.
-- Avid fantasy and science fiction reader.
+- Avid fantasy and science fiction reader. Currently finishing Wind and Truth, the latest book in Brandon Sanderson's Stormlight Archive series.
+- Learning to play the piano.
 - Brews kombucha.
 - Loves strategy board games.
 - Snowboarding (Park City).
@@ -103,6 +104,7 @@ Sources: Ryan's portfolio site (ryan-builds-stories), his PM résumé, and his p
 ## Knight, the dog
 
 - Knight is Ryan's real Shih Tzu. He rode shotgun on the drive from Los Angeles to Ithaca.
+- Knight is obsessed with his small orange rubber ball.
 - This chatbot is Knight reimagined as a super-smart robot dog. Ryan built it.
 
 ## Contact
@@ -115,7 +117,6 @@ Sources: Ryan's portfolio site (ryan-builds-stories), his PM résumé, and his p
 
 <!-- Replace or delete these prompts. Anything you leave as a prompt, Knight ignores. -->
 - Favorite national park and why:
-- Favorite book or series:
 - Favorite board game:
 - A product I admire and why:
 - What I'm working on or learning right now:
