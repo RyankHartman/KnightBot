@@ -1,4 +1,30 @@
-# Knight
+# Knight 🐾 · an AI chatbot that answers questions about me
+
+<p align="center"><img src="public/assets/robot.png" alt="Knight, a shaggy robot Shih Tzu" width="180"></p>
+
+**Live demo:** [knightbot-pi.vercel.app](https://knightbot-pi.vercel.app) · **Portfolio:** [ryan-builds-stories.lovable.app](https://ryan-builds-stories.lovable.app)
+
+Knight is my real Shih Tzu, reimagined as a robot dog. On my portfolio site, he answers recruiters' and visitors' questions about my background, and politely declines anything else. On his own page, he is a general-purpose assistant.
+
+## Why I built it
+
+A résumé answers the questions I expect. Knight answers the ones I don't. I wanted visitors to be able to ask "What did Ryan do at LAX?" or "Why the MBA?" and get a straight answer in seconds, and I wanted hands-on experience shipping an LLM product end to end rather than just talking about one.
+
+## Product decisions
+
+- **Grounded answers only.** In "about Ryan" mode, Knight answers only from one curated profile file and says when he doesn't know, instead of guessing.
+- **Personality with guardrails.** One light dog touch per reply at most, none on serious topics, and answers lead with the point.
+- **Zero-friction distribution.** One `<script>` tag adds Knight to any website as a floating button and pop-up chat, isolated in an iframe so the host site's styles can't break it and the API key never reaches the browser.
+- **Cost and abuse limits.** Message length, history and reply size are capped, requests time out, and errors map to friendly messages.
+- **Testable without a key.** A mock API lets anyone run the UI and the test suite locally.
+
+## How I built it
+
+I scoped the product, wrote the persona and guardrails, and shipped it end to end with Claude Code. Stack: plain HTML/CSS/JavaScript, one Vercel serverless function, and Groq for fast LLM inference (Llama 3.3 70B). No framework, no build step, no dependencies.
+
+---
+
+## Technical details
 
 A super-smart, general-purpose AI chatbot powered by [Groq](https://groq.com), starring Knight: Ryan's super-smart Shih Tzu, reimagined as a shaggy robot dog. Built by Ryan. Plain HTML, CSS and JavaScript on the front end, and one Vercel serverless function (`api/chat.js`) that talks to Groq. No framework, no build step, no dependencies.
 
