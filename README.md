@@ -14,7 +14,7 @@ A résumé answers the questions I expect. Knight answers the ones I don't. I wa
 
 - **Grounded answers only.** In "about Ryan" mode, Knight answers only from one curated profile file and says when he doesn't know, instead of guessing.
 - **Personality with guardrails.** One light dog touch per reply at most, none on serious topics, and answers lead with the point.
-- **Zero-friction distribution.** One `<script>` tag adds Knight to any website as a floating button and pop-up chat, isolated in an iframe so the host site's styles can't break it and the API key never reaches the browser.
+- **Zero-friction distribution.** One `<script>` tag adds Knight to any website as a floating button and pop-up chat (see him live on [SONAR](https://ryankhartman.github.io/sonar)), isolated in an iframe so the host site's styles can't break it and the API key never reaches the browser.
 - **Cost and abuse limits.** Message length, history and reply size are capped, requests time out, and errors map to friendly messages.
 - **Testable without a key.** A mock API lets anyone run the UI and the test suite locally.
 
@@ -115,3 +115,7 @@ Preview it locally at http://localhost:3000/widget-demo.html.
 2. Leave **Framework Preset** as *Other*. There is no build command, and Vercel serves `public/` automatically.
 3. Under **Environment Variables**, add `GROQ_API_KEY` (and optionally `GROQ_MODEL`).
 4. Deploy. If you change an environment variable later, redeploy.
+
+---
+
+<sub>🐾 Built by Ryan · Supervised by Knight</sub>
