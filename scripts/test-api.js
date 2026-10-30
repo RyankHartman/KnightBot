@@ -146,6 +146,8 @@ await test("about mode sends Ryan's profile and scope rules", async () => {
   assert.match(system, /YOUR SCOPE: RYAN ONLY/);
   assert.match(system, /Cornell SC Johnson College of Business/);
   assert.match(system, /politely decline/);
+  assert.match(system, /Questions about you, Knight, are in scope/);
+  assert.match(system, /don't create content/);
   assert.ok(!system.includes("<!--"), "editor comments are stripped");
   assert.ok(!/\b727\b/.test(system), "no phone number in the profile");
   assert.equal(mock.requests[0].body.temperature, 0.4);
