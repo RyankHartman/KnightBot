@@ -4,7 +4,7 @@
 
 **Live demo:** [knightbot-pi.vercel.app](https://knightbot-pi.vercel.app) · **Portfolio:** [ryan-builds-stories.lovable.app](https://ryan-builds-stories.lovable.app)
 
-Knight is my real Shih Tzu, reimagined as a robot dog. On my portfolio site, he answers recruiters' and visitors' questions about my background, and politely declines anything else. On his own page, he is a general-purpose assistant.
+Knight is my real Shih Tzu, reimagined as a robot dog. On my portfolio site, he answers recruiters' and visitors' questions about my background, and politely declines anything else. On my other apps he stays on topic: science and physics on SONAR, national parks and geography on the National Park Planner. On his own page, he is a general-purpose assistant.
 
 ## Why I built it
 
@@ -24,7 +24,7 @@ I scoped the product, wrote the persona and guardrails, and shipped it end to en
 
 ## How I tested it
 
-- **15 automated API tests** (`npm test`) cover input validation, history limits, timeouts, error mapping, both modes, and that the API key and my phone number never leak.
+- **18 automated API tests** (`npm test`) cover input validation, history limits, timeouts, error mapping, every mode, that unknown or malformed mode values fall back safely, and that the API key and my phone number never leak.
 - **Live checks against the real model**, in "about Ryan" mode:
 
 | Question | Expected | Result |
@@ -112,7 +112,13 @@ Optional attributes on the tag:
 - `data-position="left"` puts the button in the bottom-left corner.
 - `data-theme="light"` gives the panel a light theme.
 - `data-nudge="off"` hides the speech bubble above Knight ("Hi, I’m Knight, Ryan’s AI pup! Ask me anything about Ryan."). The bubble stays up until the visitor opens the chat or dismisses it, then stays hidden for that browser session.
-- `data-mode="general"` lets Knight answer anything. By default the widget uses **about mode**: Knight only answers questions about Ryan (background, education, work, interests), using `knowledge/ryan.md` as its only source, and politely declines everything else. The standalone app stays general-purpose.
+- `data-mode` picks what Knight will talk about:
+  - *(default)* **about**: only questions about Ryan (background, education, work, interests), using `knowledge/ryan.md` as the only source. Politely declines everything else.
+  - `science`: only science and physics (used on [SONAR](https://ryankhartman.github.io/sonar)).
+  - `parks`: only national parks and geography (used on the [National Park Planner](https://ryankhartman.github.io/national-park-planner/)).
+  - `general`: answers anything. The standalone app is general-purpose.
+
+  The topic modes are prompt-scoped, like about mode, so a person calling the API directly can still pick another mode. Add a new topic by adding an entry to `TOPICS` in `api/chat.js` and a matching block in `public/app.js`.
 
 To change what Knight knows about Ryan, edit `knowledge/ryan.md`, then push and redeploy.
 

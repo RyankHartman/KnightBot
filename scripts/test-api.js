@@ -153,6 +153,40 @@ await test("about mode sends Ryan's profile and scope rules", async () => {
   assert.equal(mock.requests[0].body.temperature, 0.4);
 });
 
+await test("science mode sends a science-and-physics-only scope and no profile", async () => {
+  mock.requests.length = 0;
+  const r = await call("POST", { messages: [user("How does sound travel?")], mode: "science" });
+  assert.equal(r.status, 200);
+  const system = mock.requests[0].body.messages[0].content;
+  assert.match(system, /YOUR SCOPE: SCIENCE AND PHYSICS ONLY/);
+  assert.match(system, /SONAR/);
+  assert.match(system, /politely decline/);
+  assert.ok(!system.includes("RYAN'S PROFILE"), "topic modes must not carry the profile");
+  assert.ok(!/general-purpose assistant/.test(system));
+  assert.equal(mock.requests[0].body.temperature, 0.4);
+});
+
+await test("parks mode sends a national-parks-and-geography-only scope and no profile", async () => {
+  mock.requests.length = 0;
+  const r = await call("POST", { messages: [user("How did the Grand Canyon form?")], mode: "parks" });
+  assert.equal(r.status, 200);
+  const system = mock.requests[0].body.messages[0].content;
+  assert.match(system, /YOUR SCOPE: NATIONAL PARKS AND GEOGRAPHY ONLY/);
+  assert.match(system, /nps\.gov/);
+  assert.match(system, /politely decline/);
+  assert.ok(!system.includes("RYAN'S PROFILE"));
+  assert.equal(mock.requests[0].body.temperature, 0.4);
+});
+
+await test("odd mode values never fall into a topic prompt by accident", async () => {
+  for (const mode of ["__proto__", "constructor", "toString", "hasOwnProperty", 7, null, ["science"]]) {
+    mock.requests.length = 0;
+    const r = await call("POST", { messages: [user("hi")], mode });
+    assert.equal(r.status, 200, String(mode));
+    assert.match(mock.requests[0].body.messages[0].content, /general-purpose assistant/, String(mode));
+  }
+});
+
 await test("general mode (default) does not include the profile", async () => {
   mock.requests.length = 0;
   await call("POST", { messages: [user("hi")], mode: "something-else" });

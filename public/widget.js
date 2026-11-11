@@ -11,6 +11,8 @@
  *   data-nudge="off"       hide the speech bubble above Knight
  *   data-mode="general"    let Knight answer anything (default: "about", where
  *                          Knight only answers questions about Ryan)
+ *   data-mode="science"    Knight only answers science and physics questions
+ *   data-mode="parks"      Knight only answers national park and geography questions
  */
 (() => {
   "use strict";
@@ -25,7 +27,13 @@
   const side = script.dataset.position === "left" ? "left" : "right";
   const theme = script.dataset.theme === "light" ? "light" : "dark";
   const showNudge = script.dataset.nudge !== "off";
-  const mode = script.dataset.mode === "general" ? "general" : "about";
+  const NUDGES = {
+    about: "anything about Ryan",
+    science: "anything about science and physics",
+    parks: "anything about national parks and geography",
+  };
+  const requested = script.dataset.mode;
+  const mode = requested === "general" ? "general" : Object.hasOwn(NUDGES, requested) ? requested : "about";
   const chatUrl = `${origin}/?embed=1&theme=${theme}&mode=${mode}`;
   const iconUrl = `${origin}/assets/robot.png`;
 
@@ -185,9 +193,7 @@
       }
     </style>
     <div class="nudge">
-      <button class="nudge-text" type="button">${mode === "about"
-        ? "Hi, I’m Knight, Ryan’s AI pup! Ask me anything about Ryan."
-        : "Hi, I’m Knight, Ryan’s AI pup! Ask me anything."}</button>
+      <button class="nudge-text" type="button">Hi, I’m Knight, Ryan’s AI pup! Ask me ${NUDGES[mode] ?? "anything"}.</button>
       <button class="nudge-close" type="button" aria-label="Dismiss Knight’s message">
         <svg aria-hidden="true" viewBox="0 0 24 24" width="10" height="10"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg>
       </button>

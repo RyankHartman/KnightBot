@@ -4,11 +4,51 @@
   const MAX_CHARS = 4000; // matches the server limit
   const HISTORY_LIMIT = 12; // recent messages sent as context
   const CLIENT_TIMEOUT_MS = 30000; // slightly above the server's Groq timeout
-  // ?mode=about (set by widget.js on Ryan's site): Knight only answers questions about Ryan.
-  const MODE = new URLSearchParams(location.search).get("mode") === "about" ? "about" : "general";
-  const GREETING = MODE === "about"
-    ? "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. Ask me anything about Ryan!"
-    : "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. What’s on your mind?";
+  // ?mode=... (set by widget.js): "about" answers only questions about Ryan; "science" and
+  // "parks" answer only questions about that topic (Ryan's SONAR and National Park apps);
+  // anything else is the general-purpose assistant.
+  const FOCUSED = {
+    about: {
+      greeting: "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. Ask me anything about Ryan!",
+      title: "Ask me about Ryan.",
+      sub: "Ryan’s background, education, work, projects and interests. I’ve sniffed out all the details.",
+      placeholder: "Ask about Ryan…",
+      prompts: [
+        "What’s Ryan’s background?",
+        "Where did Ryan go to school?",
+        "What has Ryan built or shipped?",
+        "What does Ryan do for fun?",
+      ],
+    },
+    science: {
+      greeting: "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. Ask me anything about science and physics!",
+      title: "Ask me about science.",
+      sub: "Physics, sound, waves, space, chemistry and more. I’ve sniffed out the answers.",
+      placeholder: "Ask about science or physics…",
+      prompts: [
+        "How does sound travel?",
+        "Why do ripples spread in circles?",
+        "What makes a note sound high or low?",
+        "What is resonance?",
+      ],
+    },
+    parks: {
+      greeting: "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. Ask me anything about national parks and geography!",
+      title: "Ask me about parks and places.",
+      sub: "National parks, landscapes, wildlife, maps and geography. I’ve sniffed out the trails.",
+      placeholder: "Ask about parks or geography…",
+      prompts: [
+        "How did the Grand Canyon form?",
+        "Which national parks are best in winter?",
+        "What makes Yosemite Valley so dramatic?",
+        "National park vs national forest: what’s the difference?",
+      ],
+    },
+  };
+  const requestedMode = new URLSearchParams(location.search).get("mode");
+  const MODE = Object.hasOwn(FOCUSED, requestedMode) ? requestedMode : "general";
+  const GREETING = FOCUSED[MODE]?.greeting
+    ?? "Hey, I’m Knight, Ryan’s super-smart Shih Tzu. What’s on your mind?";
 
   const $ = (id) => document.getElementById(id);
   const log = $("log");
@@ -267,22 +307,16 @@
     input.focus();
   });
 
-  // ---------- About-Ryan mode ----------
-  if (MODE === "about") {
+  // ---------- Focused modes (about Ryan, science, parks) ----------
+  const focus = FOCUSED[MODE];
+  if (focus) {
     bubbleText.textContent = GREETING;
-    empty.querySelector("h1").textContent = "Ask me about Ryan.";
-    empty.querySelector(".empty-sub").textContent =
-      "Ryan’s background, education, work, projects and interests. I’ve sniffed out all the details.";
-    const prompts = [
-      "What’s Ryan’s background?",
-      "Where did Ryan go to school?",
-      "What has Ryan built or shipped?",
-      "What does Ryan do for fun?",
-    ];
+    empty.querySelector("h1").textContent = focus.title;
+    empty.querySelector(".empty-sub").textContent = focus.sub;
     document.querySelectorAll("#suggestions .chip").forEach((chip, i) => {
-      if (prompts[i]) chip.textContent = prompts[i];
+      if (focus.prompts[i]) chip.textContent = focus.prompts[i];
     });
-    input.placeholder = "Ask about Ryan…";
+    input.placeholder = focus.placeholder;
   }
 
   // ---------- Embed mode (inside the widget.js iframe) ----------
